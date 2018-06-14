@@ -8,10 +8,11 @@ class Node(
         description: String,
         summary: String,
         notes: String,
-        children: List<UUID> = listOf()
+        children: List<UUID> = listOf(),
+        contributors: List<Contributor> = listOf()
 ){
     var modified: Boolean = false
-    
+
     var title: String = title
         set(value){
             if( value != this.title ){
@@ -20,7 +21,7 @@ class Node(
             }
         }
 
-    var subtitle: String = title
+    var subtitle: String = subtitle
         set(value){
             if( value != this.subtitle ){
                 field = value
@@ -86,18 +87,38 @@ class Node(
         notifyListeners(childrenChanged = true)
     }
 
+    private val _contributors: MutableList<Contributor> = contributors.toMutableList()
+    val contributors: List<Contributor> get() = _contributors.toList()
+
+    fun add( contributor: Contributor ){
+        _contributors.add(contributor)
+        notifyListeners(contributorsChanged = true)
+    }
+
+    fun remove( contributor: Contributor ){
+        _contributors.remove(contributor)
+        notifyListeners(contributorsChanged = true)
+    }
+
+    fun clearContributors(){
+        _contributors.clear()
+        notifyListeners(contributorsChanged = true)
+    }
+
+
     private val listeners: MutableList<NodeListener> = mutableListOf()
     fun addListener( listener: NodeListener ) = listeners.add(listener)
     fun removeListener( listener: NodeListener ) = listeners.remove(listener)
 
-    fun notifyListeners(
+    private fun notifyListeners(
             titleChanged: Boolean = false,
             subtitleChanged: Boolean = false,
             manuscriptChanged: Boolean = false,
             descriptionChanged: Boolean = false,
             summaryChanged: Boolean = false,
             notesChanged: Boolean = false,
-            childrenChanged: Boolean = false
+            childrenChanged: Boolean = false,
+            contributorsChanged: Boolean = false
     ){
         modified = true
 
@@ -112,6 +133,7 @@ class Node(
             if( summaryChanged ) listener.summaryChanged(this)
             if( notesChanged ) listener.notesChanged(this)
             if( childrenChanged ) listener.childrenChanged(this)
+            if( contributorsChanged ) listener.contributorsChanged(this)
         }
     }
 }
@@ -124,6 +146,7 @@ interface NodeListener{
     fun summaryChanged(node: Node)
     fun notesChanged(node: Node)
     fun childrenChanged(node: Node)
+    fun contributorsChanged(node: Node)
 }
 
 fun emptyNode( name: String ): Node = Node( uuid = UUID(name), title = name, subtitle = "", manuscript = "", description = "", summary = "", notes = "" )
