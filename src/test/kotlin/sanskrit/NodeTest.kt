@@ -7,6 +7,7 @@ class NodeTest{
     @Test fun testNodeCreation(){
         val node = Node(
                 title = "Title",
+                subtitle = "Subtitle",
                 manuscript = "Manuscript",
                 description = "Description",
                 summary = "Summary",
@@ -67,6 +68,23 @@ class NodeTest{
 
         node.title = UUID().value
         Assert.assertTrue("Title should have been changed", listener.title)
+        Assert.assertFalse("Subtitle should not have been changed", listener.subtitle)
+        Assert.assertFalse("Manuscript should not have been changed", listener.manuscript)
+        Assert.assertFalse("Description should not have been changed", listener.description)
+        Assert.assertFalse("Summary should not have been changed", listener.summary)
+        Assert.assertFalse("Notes should not have been changed", listener.notes)
+        Assert.assertFalse("Children should not have been changed", listener.children)
+    }
+
+    @Test fun testNodeListenerSubtitle(){
+        val node = createNode()
+
+        val listener = DummyNodeListener()
+        node.addListener(listener)
+
+        node.subtitle = UUID().value
+        Assert.assertFalse("Title should not have been changed", listener.title)
+        Assert.assertTrue("Subtitle should have been changed", listener.subtitle)
         Assert.assertFalse("Manuscript should not have been changed", listener.manuscript)
         Assert.assertFalse("Description should not have been changed", listener.description)
         Assert.assertFalse("Summary should not have been changed", listener.summary)
@@ -82,6 +100,7 @@ class NodeTest{
 
         node.manuscript = UUID().value
         Assert.assertFalse("Title should not have been changed", listener.title)
+        Assert.assertFalse("Subtitle should not have been changed", listener.subtitle)
         Assert.assertTrue("Manuscript should have been changed", listener.manuscript)
         Assert.assertFalse("Description should not have been changed", listener.description)
         Assert.assertFalse("Summary should not have been changed", listener.summary)
@@ -97,6 +116,7 @@ class NodeTest{
 
         node.description = UUID().value
         Assert.assertFalse("Title should not have been changed", listener.title)
+        Assert.assertFalse("Subtitle should not have been changed", listener.subtitle)
         Assert.assertFalse("Manuscript should not have been changed", listener.manuscript)
         Assert.assertTrue("Description should have been changed", listener.description)
         Assert.assertFalse("Summary should not have been changed", listener.summary)
@@ -112,6 +132,7 @@ class NodeTest{
 
         node.summary = UUID().value
         Assert.assertFalse("Title should not have been changed", listener.title)
+        Assert.assertFalse("Subtitle should not have been changed", listener.subtitle)
         Assert.assertFalse("Manuscript should not have been changed", listener.manuscript)
         Assert.assertFalse("Description should not have been changed", listener.description)
         Assert.assertTrue("Summary should have been changed", listener.summary)
@@ -127,6 +148,7 @@ class NodeTest{
 
         node.notes = UUID().value
         Assert.assertFalse("Title should not have been changed", listener.title)
+        Assert.assertFalse("Subtitle should not have been changed", listener.subtitle)
         Assert.assertFalse("Manuscript should not have been changed", listener.manuscript)
         Assert.assertFalse("Description should not have been changed", listener.description)
         Assert.assertFalse("Summary should not have been changed", listener.summary)
@@ -143,6 +165,7 @@ class NodeTest{
         node.add( UUID() )
 
         Assert.assertFalse("Title should not have been changed", listener.title)
+        Assert.assertFalse("Subtitle should not have been changed", listener.subtitle)
         Assert.assertFalse("Manuscript should not have been changed", listener.manuscript)
         Assert.assertFalse("Description should not have been changed", listener.description)
         Assert.assertFalse("Summary should not have been changed", listener.summary)
@@ -164,6 +187,7 @@ class NodeTest{
         node.add( 2, UUID() )
 
         Assert.assertFalse("Title should not have been changed", listener.title)
+        Assert.assertFalse("Subtitle should not have been changed", listener.subtitle)
         Assert.assertFalse("Manuscript should not have been changed", listener.manuscript)
         Assert.assertFalse("Description should not have been changed", listener.description)
         Assert.assertFalse("Summary should not have been changed", listener.summary)
@@ -188,6 +212,7 @@ class NodeTest{
         node.remove(child)
 
         Assert.assertFalse("Title should not have been changed", listener.title)
+        Assert.assertFalse("Subtitle should not have been changed", listener.subtitle)
         Assert.assertFalse("Manuscript should not have been changed", listener.manuscript)
         Assert.assertFalse("Description should not have been changed", listener.description)
         Assert.assertFalse("Summary should not have been changed", listener.summary)
@@ -209,6 +234,7 @@ class NodeTest{
         node.remove(3)
 
         Assert.assertFalse("Title should not have been changed", listener.title)
+        Assert.assertFalse("Subtitle should not have been changed", listener.subtitle)
         Assert.assertFalse("Manuscript should not have been changed", listener.manuscript)
         Assert.assertFalse("Description should not have been changed", listener.description)
         Assert.assertFalse("Summary should not have been changed", listener.summary)
@@ -216,38 +242,23 @@ class NodeTest{
         Assert.assertTrue("Children should have been changed", listener.children)
     }
 
-    private fun createNode( uuid: String = UUID().value ): Node = Node( UUID(uuid), UUID().value, UUID().value, UUID().value, UUID().value, UUID().value )
+    private fun createNode( uuid: String = UUID().value ): Node = Node( UUID(uuid), UUID().value, UUID().value, UUID().value, UUID().value, UUID().value, UUID().value )
 
     private class DummyNodeListener: NodeListener{
         var title: Boolean = false
+        var subtitle: Boolean = false
         var manuscript: Boolean = false
         var description: Boolean = false
         var summary: Boolean = false
         var notes: Boolean = false
         var children: Boolean = false
 
-        override fun titleChanged(node: Node) {
-            title = true
-        }
-
-        override fun manuscriptChanged(node: Node) {
-            manuscript = true
-        }
-
-        override fun descriptionChanged(node: Node) {
-            description = true
-        }
-
-        override fun summaryChanged(node: Node) {
-            summary = true
-        }
-
-        override fun notesChanged(node: Node) {
-            notes = true
-        }
-
-        override fun childrenChanged(node: Node) {
-            children = true
-        }
+        override fun titleChanged(node: Node) { title = true }
+        override fun subtitleChanged(node: Node) { subtitle = true }
+        override fun manuscriptChanged(node: Node) { manuscript = true }
+        override fun descriptionChanged(node: Node) { description = true }
+        override fun summaryChanged(node: Node) { summary = true }
+        override fun notesChanged(node: Node) { notes = true }
+        override fun childrenChanged(node: Node) { children = true }
     }
 }

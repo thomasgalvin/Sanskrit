@@ -5,16 +5,26 @@ import java.util.*
 class Node(
         val uuid: UUID = UUID(),
         title: String,
+        subtitle: String,
         manuscript: String,
         description: String,
         summary: String,
-        notes: String
+        notes: String,
+        children: List<UUID> = listOf()
 ){
     var title: String = title
         set(value){
             if( value != this.title ){
                 field = value
                 notifyListeners(titleChanged = true)
+            }
+        }
+
+    var subtitle: String = title
+        set(value){
+            if( value != this.subtitle ){
+                field = value
+                notifyListeners(subtitleChanged = true)
             }
         }
 
@@ -53,7 +63,7 @@ class Node(
     var modified: Boolean = false
 
 
-    private val children: MutableList<UUID> = mutableListOf()
+    private val children: MutableList<UUID> = children.toMutableList()
 
     operator fun get(index: Int) = children[index]
 
@@ -86,6 +96,7 @@ class Node(
 
     fun notifyListeners(
             titleChanged: Boolean = false,
+            subtitleChanged: Boolean = false,
             manuscriptChanged: Boolean = false,
             descriptionChanged: Boolean = false,
             summaryChanged: Boolean = false,
@@ -99,6 +110,7 @@ class Node(
 
         for( listener in list ){
             if( titleChanged ) listener.titleChanged(this)
+            if( subtitleChanged ) listener.subtitleChanged(this)
             if( manuscriptChanged ) listener.manuscriptChanged(this)
             if( descriptionChanged ) listener.descriptionChanged(this)
             if( summaryChanged ) listener.summaryChanged(this)
@@ -110,6 +122,7 @@ class Node(
 
 interface NodeListener{
     fun titleChanged(node: Node)
+    fun subtitleChanged(node: Node)
     fun manuscriptChanged(node: Node)
     fun descriptionChanged(node: Node)
     fun summaryChanged(node: Node)
@@ -117,4 +130,4 @@ interface NodeListener{
     fun childrenChanged(node: Node)
 }
 
-fun emptyNode( name: String ): Node = Node( uuid = UUID(name), title = name, manuscript = "", description = "", summary = "", notes = "" )
+fun emptyNode( name: String ): Node = Node( uuid = UUID(name), title = name, subtitle = "", manuscript = "", description = "", summary = "", notes = "" )
