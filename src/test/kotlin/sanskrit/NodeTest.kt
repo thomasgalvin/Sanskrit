@@ -24,33 +24,33 @@ class NodeTest{
         val node = createNode("Parent")
 
         val children = mutableListOf(
-                createNode("1"),
-                createNode("2"),
-                createNode("3"),
-                createNode("4"),
-                createNode("5")
+                UUID("1"),
+                UUID("2"),
+                UUID("3"),
+                UUID("4"),
+                UUID("5")
         )
         for(child in children) node.add(child)
 
         assertOrder(children, node)
 
-        val a = createNode("A")
+        val a = UUID("A")
         children.add(0, a)
         node.add(0, a)
         assertOrder(children, node)
 
-        val b = createNode("B")
+        val b = UUID("B")
         children.add(3, b)
         node.add(3, b)
         assertOrder(children, node)
 
-        val c = createNode("C")
+        val c = UUID("C")
         children.add(5, c)
         node.add(5, c)
         assertOrder(children, node)
     }
 
-    private fun assertOrder( children: List<Node>, node: Node ){
+    private fun assertOrder( children: List<UUID>, node: Node ){
         for( i in 0 until children.size ){
             val expected = children[i]
             val actual = node[i]
@@ -65,7 +65,7 @@ class NodeTest{
         val listener = DummyNodeListener()
         node.addListener(listener)
 
-        node.title = uuid()
+        node.title = UUID().value
         Assert.assertTrue("Title should have been changed", listener.title)
         Assert.assertFalse("Manuscript should not have been changed", listener.manuscript)
         Assert.assertFalse("Description should not have been changed", listener.description)
@@ -80,7 +80,7 @@ class NodeTest{
         val listener = DummyNodeListener()
         node.addListener(listener)
 
-        node.manuscript = uuid()
+        node.manuscript = UUID().value
         Assert.assertFalse("Title should not have been changed", listener.title)
         Assert.assertTrue("Manuscript should have been changed", listener.manuscript)
         Assert.assertFalse("Description should not have been changed", listener.description)
@@ -95,7 +95,7 @@ class NodeTest{
         val listener = DummyNodeListener()
         node.addListener(listener)
 
-        node.description = uuid()
+        node.description = UUID().value
         Assert.assertFalse("Title should not have been changed", listener.title)
         Assert.assertFalse("Manuscript should not have been changed", listener.manuscript)
         Assert.assertTrue("Description should have been changed", listener.description)
@@ -110,7 +110,7 @@ class NodeTest{
         val listener = DummyNodeListener()
         node.addListener(listener)
 
-        node.summary = uuid()
+        node.summary = UUID().value
         Assert.assertFalse("Title should not have been changed", listener.title)
         Assert.assertFalse("Manuscript should not have been changed", listener.manuscript)
         Assert.assertFalse("Description should not have been changed", listener.description)
@@ -125,7 +125,7 @@ class NodeTest{
         val listener = DummyNodeListener()
         node.addListener(listener)
 
-        node.notes = uuid()
+        node.notes = UUID().value
         Assert.assertFalse("Title should not have been changed", listener.title)
         Assert.assertFalse("Manuscript should not have been changed", listener.manuscript)
         Assert.assertFalse("Description should not have been changed", listener.description)
@@ -140,7 +140,7 @@ class NodeTest{
         val listener = DummyNodeListener()
         node.addListener(listener)
 
-        node.add( createNode() )
+        node.add( UUID() )
 
         Assert.assertFalse("Title should not have been changed", listener.title)
         Assert.assertFalse("Manuscript should not have been changed", listener.manuscript)
@@ -152,16 +152,16 @@ class NodeTest{
 
     @Test fun testNodeListenerChildrenAddAt(){
         val node = createNode()
-        node.add( createNode() )
-        node.add( createNode() )
-        node.add( createNode() )
-        node.add( createNode() )
-        node.add( createNode() )
+        node.add( UUID() )
+        node.add( UUID() )
+        node.add( UUID() )
+        node.add( UUID() )
+        node.add( UUID() )
 
         val listener = DummyNodeListener()
         node.addListener(listener)
 
-        node.add( 2, createNode() )
+        node.add( 2, UUID() )
 
         Assert.assertFalse("Title should not have been changed", listener.title)
         Assert.assertFalse("Manuscript should not have been changed", listener.manuscript)
@@ -173,13 +173,13 @@ class NodeTest{
 
     @Test fun testNodeListenerChildrenRemove(){
         val node = createNode()
-        node.add( createNode() )
-        node.add( createNode() )
-        node.add( createNode() )
-        node.add( createNode() )
-        node.add( createNode() )
+        node.add( UUID() )
+        node.add( UUID() )
+        node.add( UUID() )
+        node.add( UUID() )
+        node.add( UUID() )
 
-        val child = createNode()
+        val child = UUID()
         node.add( 2, child )
 
         val listener = DummyNodeListener()
@@ -197,11 +197,11 @@ class NodeTest{
 
     @Test fun testNodeListenerChildrenRemoveAt(){
         val node = createNode()
-        node.add( createNode() )
-        node.add( createNode() )
-        node.add( createNode() )
-        node.add( createNode() )
-        node.add( createNode() )
+        node.add( UUID() )
+        node.add( UUID() )
+        node.add( UUID() )
+        node.add( UUID() )
+        node.add( UUID() )
 
         val listener = DummyNodeListener()
         node.addListener(listener)
@@ -216,7 +216,7 @@ class NodeTest{
         Assert.assertTrue("Children should have been changed", listener.children)
     }
 
-    private fun createNode( uuid: String = uuid() ): Node = Node( uuid, uuid(), uuid(), uuid(), uuid(), uuid() )
+    private fun createNode( uuid: String = UUID().value ): Node = Node( UUID(uuid), UUID().value, UUID().value, UUID().value, UUID().value, UUID().value )
 
     private class DummyNodeListener: NodeListener{
         var title: Boolean = false

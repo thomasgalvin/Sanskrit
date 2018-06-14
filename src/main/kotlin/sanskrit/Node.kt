@@ -3,7 +3,7 @@ package sanskrit
 import java.util.*
 
 class Node(
-        val uuid: String = uuid(),
+        val uuid: UUID = UUID(),
         title: String,
         manuscript: String,
         description: String,
@@ -53,22 +53,22 @@ class Node(
     var modified: Boolean = false
 
 
-    private val children: MutableList<Node> = mutableListOf()
+    private val children: MutableList<UUID> = mutableListOf()
 
     operator fun get(index: Int) = children[index]
 
-    fun add( child: Node ){
+    fun add( child: UUID ){
         children.add(child)
         notifyListeners(childrenChanged = true)
     }
 
-    fun add( index: Int, child: Node ){
+    fun add( index: Int, child: UUID ){
         children.remove(child)
         children.add(index, child)
         notifyListeners(childrenChanged = true)
     }
 
-    fun remove( child: Node ){
+    fun remove( child: UUID ){
         if( children.contains(child) ){
             children.remove(child)
             notifyListeners(childrenChanged = true)
@@ -117,6 +117,4 @@ interface NodeListener{
     fun childrenChanged(node: Node)
 }
 
-fun emptyNode( name: String ): Node = Node( uuid = name, title = name, manuscript = "", description = "", summary = "", notes = "" )
-
-fun uuid(): String = UUID.randomUUID().toString()
+fun emptyNode( name: String ): Node = Node( uuid = UUID(name), title = name, manuscript = "", description = "", summary = "", notes = "" )

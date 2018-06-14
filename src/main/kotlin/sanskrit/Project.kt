@@ -13,7 +13,7 @@ interface ProjectIO{
 }
 
 class Project(
-        var uuid: String = uuid(),
+        var uuid: UUID = UUID(),
         var title: String,
         val strings: Strings = Strings()
 ){
