@@ -1,3 +1,3 @@
 package sanskrit
 
-class UnsupportedLocationException(error: String): RuntimeException(error)
+class UnsupportedLocationException( val location: ProjectLocation? = null, error: String = "Unsupported location type" ): RuntimeException(error)

@@ -149,4 +149,3 @@ interface NodeListener{
     fun contributorsChanged(node: Node)
 }
 
-fun emptyNode( name: String ): Node = Node( uuid = UUID(name), title = name, subtitle = "", manuscript = "", description = "", summary = "", notes = "" )
