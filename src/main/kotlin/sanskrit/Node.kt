@@ -1,7 +1,5 @@
 package sanskrit
 
-import java.util.*
-
 class Node(
         val uuid: UUID = UUID(),
         title: String,
@@ -12,6 +10,8 @@ class Node(
         notes: String,
         children: List<UUID> = listOf()
 ){
+    var modified: Boolean = false
+    
     var title: String = title
         set(value){
             if( value != this.title ){
@@ -60,33 +60,29 @@ class Node(
             }
         }
 
-    var modified: Boolean = false
-
-
-    private val children: MutableList<UUID> = children.toMutableList()
-
-    operator fun get(index: Int) = children[index]
+    private val _children: MutableList<UUID> = children.toMutableList()
+    val children: List<UUID> get() = _children.toList()
 
     fun add( child: UUID ){
-        children.add(child)
+        _children.add(child)
         notifyListeners(childrenChanged = true)
     }
 
     fun add( index: Int, child: UUID ){
-        children.remove(child)
-        children.add(index, child)
+        _children.remove(child)
+        _children.add(index, child)
         notifyListeners(childrenChanged = true)
     }
 
     fun remove( child: UUID ){
-        if( children.contains(child) ){
-            children.remove(child)
+        if( _children.contains(child) ){
+            _children.remove(child)
             notifyListeners(childrenChanged = true)
         }
     }
 
     fun remove( index: Int ){
-        children.removeAt(index)
+        _children.removeAt(index)
         notifyListeners(childrenChanged = true)
     }
 

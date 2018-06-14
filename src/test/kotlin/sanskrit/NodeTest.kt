@@ -54,8 +54,7 @@ class NodeTest{
     private fun assertOrder( children: List<UUID>, node: Node ){
         for( i in 0 until children.size ){
             val expected = children[i]
-            val actual = node[i]
-
+            val actual = node.children[i]
             Assert.assertEquals("Unexpected child node", expected, actual)
         }
     }
