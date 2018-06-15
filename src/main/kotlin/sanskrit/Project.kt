@@ -19,7 +19,7 @@ data class NodeReference( val uuid: UUID, val children: List<NodeReference> ){
 
     private fun toString(builder: StringBuilder, indentLevel: Int, nodeDB: NodeDB ){
         val node = nodeDB.getNode(uuid)
-        if( node != null ) builder.append( "${getIndent(indentLevel)}${node.title}\n" )
+        builder.append( "${getIndent(indentLevel)}${node.title}\n" )
         for(child in children) child.toString(builder, indentLevel + 1, nodeDB)
     }
 
@@ -35,10 +35,8 @@ fun toNodeReference(node: Node, nodeDB: NodeDB ): NodeReference{
 
     for( childUUID in node.children ){
         val child = nodeDB.getNode(childUUID)
-        if( child != null ){
-            val childReference = toNodeReference(child, nodeDB)
-            childReferences.add(childReference)
-        }
+        val childReference = toNodeReference(child, nodeDB)
+        childReferences.add(childReference)
     }
 
     return NodeReference(node.uuid, childReferences)
