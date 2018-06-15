@@ -1,0 +1,1 @@
+delete from children where parentUuid = ?

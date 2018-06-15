@@ -1,0 +1,1 @@
+insert into children( parentUuid, childUuid, ordinal ) values(?,?,?)

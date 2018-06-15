@@ -1,0 +1,1 @@
+insert into Contributors(parentUuid, name, sortByName, role, ordinal) values( ?,?,?,?,? )
