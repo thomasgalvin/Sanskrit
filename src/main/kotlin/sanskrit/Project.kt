@@ -6,7 +6,8 @@ interface ProjectLocation
 data class ProjectLocationFile(val location: File): ProjectLocation
 
 interface NodeDB{
-    fun getNode( uuid: UUID ): Node?
+    fun getNode( uuid: UUID ): Node
+    fun storeNode( node: Node )
 }
 
 data class NodeReference( val uuid: UUID, val children: List<NodeReference> ){

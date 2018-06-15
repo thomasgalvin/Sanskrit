@@ -50,7 +50,7 @@ class NodeReferenceTest{
     """.trimIndent()
 
     @Test fun testToNodeReference(){
-        val nodeSource = DummyNodeSource()
+        val nodeSource = DummyNodeDB()
 
         val manuscript = createNode(uuid = strings.manuscript, title = strings.manuscript, parent = null, nodeSource = nodeSource)
             val ch1 = createNode(uuid = "Chapter 1", nodeSource = nodeSource, parent = manuscript)
@@ -98,9 +98,9 @@ class NodeReferenceTest{
         Assert.assertEquals("Unexpected string representation of node references", expected, string)
     }
 
-    private fun createNode( uuid: String = UUID().value, title: String = uuid, nodeSource: DummyNodeSource, parent: Node? ): Node{
+    private fun createNode(uuid: String = UUID().value, title: String = uuid, nodeSource: DummyNodeDB, parent: Node? ): Node{
         val node = Node( UUID(uuid), title, UUID().value, UUID().value, UUID().value, UUID().value, UUID().value )
-        nodeSource.add(node)
+        nodeSource.storeNode(node)
         if( parent != null ) parent.add(node.uuid)
         return node
     }
