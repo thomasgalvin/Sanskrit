@@ -1,6 +1,6 @@
 package sanskrit
 
-class DummyNodeSource: NodeSource{
+class DummyNodeSource: NodeDB{
     private val map = mutableMapOf<UUID, Node>()
 
     fun add( node: Node ){ map[node.uuid] = node }

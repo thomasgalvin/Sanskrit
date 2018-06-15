@@ -1,26 +1,25 @@
 package sanskrit
 
 import java.io.File
-import java.util.*
 
 interface ProjectLocation
 data class ProjectLocationFile(val location: File): ProjectLocation
 
-interface NodeSource{
+interface NodeDB{
     fun getNode( uuid: UUID ): Node?
 }
 
 data class NodeReference( val uuid: UUID, val children: List<NodeReference> ){
-    fun toString(nodeSource: NodeSource): String {
+    fun toString(nodeDB: NodeDB): String {
         val builder = StringBuilder()
-        toString(builder, 0, nodeSource)
+        toString(builder, 0, nodeDB)
         return builder.toString().trim()
     }
 
-    private fun toString( builder: StringBuilder, indentLevel: Int, nodeSource: NodeSource ){
-        val node = nodeSource.getNode(uuid)
+    private fun toString(builder: StringBuilder, indentLevel: Int, nodeDB: NodeDB ){
+        val node = nodeDB.getNode(uuid)
         if( node != null ) builder.append( "${getIndent(indentLevel)}${node.title}\n" )
-        for(child in children) child.toString(builder, indentLevel + 1, nodeSource)
+        for(child in children) child.toString(builder, indentLevel + 1, nodeDB)
     }
 
     private fun getIndent(indentLevel: Int): String{
@@ -30,41 +29,16 @@ data class NodeReference( val uuid: UUID, val children: List<NodeReference> ){
     }
 }
 
-class ProjectStructure(
-        val manuscript: NodeReference,
-        val research: NodeReference,
-        val resources: NodeReference,
-        val trash: NodeReference
-)
-
-fun toNodeReference( node: Node, source: NodeSource ): NodeReference{
+fun toNodeReference(node: Node, nodeDB: NodeDB ): NodeReference{
     val childReferences = mutableListOf<NodeReference>()
 
     for( childUUID in node.children ){
-        val child = source.getNode(childUUID)
+        val child = nodeDB.getNode(childUUID)
         if( child != null ){
-            val childReference = toNodeReference(child, source)
+            val childReference = toNodeReference(child, nodeDB)
             childReferences.add(childReference)
         }
     }
 
     return NodeReference(node.uuid, childReferences)
 }
-
-
-//class SqliteProject( private val strings: Strings = Strings(),
-//                     val location: ProjectLocation )
-//{
-//    init{
-//        if( location !is ProjectLocationFile ) throw UnsupportedLocationException(location)
-//    }
-//
-//    private val nodes: MutableMap<UUID, Node> = mutableMapOf()
-//
-//    val manuscript: Node = emptyNode( strings.manuscript )
-//    val research: Node = emptyNode( strings.research )
-//    val resources: Node = emptyNode( strings.resources )
-//    val trash: Node = emptyNode( strings.trash )
-//}
-//
-//fun emptyNode( name: String ): Node = Node( uuid = UUID(name), title = name, subtitle = "", manuscript = "", description = "", summary = "", notes = "" )
