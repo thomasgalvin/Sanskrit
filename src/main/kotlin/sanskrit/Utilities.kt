@@ -5,7 +5,7 @@ import java.io.IOException
 
 class Utilities{
     companion object {
-        private val logger = LoggerFactory.getLogger(Utilities::class.java!!)
+        private val logger = LoggerFactory.getLogger(Utilities::class.java)
 
         fun loadFromClasspath( classpathEntry: String ): String {
             if( logger.isTraceEnabled )logger.trace("Loading text from classpath: $classpathEntry")

@@ -10,7 +10,7 @@ class SanskritDB(
         private val connectionManager: ConnectionManager,
         private val sqlClasspath: String
 ){
-    private val logger = LoggerFactory.getLogger(SanskritDB::class.java!!)
+    private val logger = LoggerFactory.getLogger(SanskritDB::class.java)
     private val concurrencyLock = Object()
 
     private val nodeExists = loadFromClasspath("$sqlClasspath/nodeExists.sql")

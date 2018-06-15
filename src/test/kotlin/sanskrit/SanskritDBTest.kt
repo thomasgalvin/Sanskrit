@@ -4,7 +4,7 @@ import org.junit.Test
 import java.io.File
 import java.security.SecureRandom
 
-class SanskritDBtest{
+class SanskritDBTest{
     private val random = SecureRandom()
     private val maxConnections = 1
 
