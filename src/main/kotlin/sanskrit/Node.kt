@@ -87,6 +87,11 @@ class Node(
         notifyListeners(childrenChanged = true)
     }
 
+    fun clearChildren(){
+        _children.clear()
+        notifyListeners(childrenChanged = true)
+    }
+
     private val _contributors: MutableList<Contributor> = contributors.toMutableList()
     val contributors: List<Contributor> get() = _contributors.toList()
 
@@ -177,6 +182,12 @@ class Node(
         result = 31 * result + _contributors.hashCode()
         return result
     }
+
+    override fun toString(): String {
+        return "Node(uuid=$uuid, title='$title', subtitle='$subtitle', manuscript='$manuscript', description='$description', summary='$summary', notes='$notes', _children=$_children, _contributors=$_contributors)"
+    }
+
+
 }
 
 class NodeDirty{

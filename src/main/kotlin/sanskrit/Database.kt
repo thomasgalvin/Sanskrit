@@ -83,6 +83,7 @@ class SanskritDB(
                 replaceContributors(node, exists, conn)
 
                 conn.commit()
+                node.dirty.clean()
             }
             catch(t: Throwable){
                 conn.rollback()
@@ -94,9 +95,11 @@ class SanskritDB(
         }
     }
 
-    fun patch(node: Node){
+    fun patchNode(node: Node){
         if(logger.isTraceEnabled) logger.trace("Patching node: ${node.uuid}")
+
         if( !nodeExists(node.uuid) ){
+            if(logger.isTraceEnabled) logger.trace("    Node does not exist; storing")
             storeNode(node)
             return
         }
@@ -149,11 +152,11 @@ class SanskritDB(
                 }
                 if (node.dirty.children) {
                     if(logger.isTraceEnabled) logger.trace("    Patching children")
-                    replaceChildren(node, false, conn)
+                    replaceChildren(node, true, conn)
                 }
                 if (node.dirty.contributors) {
                     if(logger.isTraceEnabled) logger.trace("    Patching contributors")
-                    replaceContributors(node, false, conn)
+                    replaceContributors(node, true, conn)
                 }
 
                 conn.commit()
