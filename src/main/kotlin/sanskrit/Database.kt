@@ -186,8 +186,6 @@ class SanskritDB(
                 release(conn)
             }
         }
-
-        throw NodeNotFoundException(uuid)
     }
 
     companion object {
