@@ -434,6 +434,36 @@ class NodeTest{
         Assert.assertTrue("Node.contributors should have been dirty", node.dirty.contributors)
     }
 
+    @Test fun testNodeListenerRemoveContributors(){
+        val node = createNode()
+
+        val contributor = createContributor()
+        node.addContributor( contributor )
+
+        val listener = DummyNodeListener()
+        node.addListener(listener)
+
+        node.removeContributor(contributor)
+
+        Assert.assertFalse("Title should not have been changed", listener.title)
+        Assert.assertFalse("Subtitle should not have been changed", listener.subtitle)
+        Assert.assertFalse("Manuscript should not have been changed", listener.manuscript)
+        Assert.assertFalse("Description should not have been changed", listener.description)
+        Assert.assertFalse("Summary should not have been changed", listener.summary)
+        Assert.assertFalse("Notes should not have been changed", listener.notes)
+        Assert.assertFalse("Children should not have been changed", listener.children)
+        Assert.assertTrue("Contributors should have been changed", listener.contributors)
+
+        Assert.assertFalse("Node.title should not have been dirty", node.dirty.title)
+        Assert.assertFalse("Node.subtitle should not have been dirty", node.dirty.subtitle)
+        Assert.assertFalse("Node.manuscript should not have been dirty", node.dirty.manuscript)
+        Assert.assertFalse("Node.description should not have been dirty", node.dirty.description)
+        Assert.assertFalse("Node.summary should not have been dirty", node.dirty.summary)
+        Assert.assertFalse("Node.notes should not have been dirty", node.dirty.notes)
+        Assert.assertFalse("Node.children should not have been dirty", node.dirty.children)
+        Assert.assertTrue("Node.contributors should have been dirty", node.dirty.contributors)
+    }
+
     private fun createNode( uuid: String = UUID().value ): Node = Node( UUID(uuid), UUID().value, UUID().value, UUID().value, UUID().value, UUID().value, UUID().value )
 
     private fun createContributor(): Contributor = Contributor( UUID().value, UUID().value, randomRole() )
