@@ -133,6 +133,8 @@ class Node(
         list.reverse()
 
         for( listener in list ){
+            listener.nodeChanged(this)
+
             if( titleChanged ) listener.titleChanged(this)
             if( subtitleChanged ) listener.subtitleChanged(this)
             if( manuscriptChanged ) listener.manuscriptChanged(this)
@@ -200,6 +202,7 @@ class NodeDirty{
 }
 
 interface NodeListener{
+    fun nodeChanged(node: Node)
     fun titleChanged(node: Node)
     fun subtitleChanged(node: Node)
     fun manuscriptChanged(node: Node)

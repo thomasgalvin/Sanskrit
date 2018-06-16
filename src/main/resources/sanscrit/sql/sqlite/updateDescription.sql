@@ -1,0 +1,1 @@
+update nodes set description = ? where uuid = ?

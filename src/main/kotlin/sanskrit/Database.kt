@@ -23,6 +23,13 @@ class SanskritDB(
     private val retrieveChildren = loadFromClasspath("$sqlClasspath/retrieveChildren.sql")
     private val retrieveContributors = loadFromClasspath("$sqlClasspath/retrieveContributors.sql")
 
+    private val updateTitle = loadFromClasspath("$sqlClasspath/updateTitle.sql")
+    private val updateSubtitle = loadFromClasspath("$sqlClasspath/updateSubtitle.sql")
+    private val updateManuscript = loadFromClasspath("$sqlClasspath/updateManuscript.sql")
+    private val updateDescription = loadFromClasspath("$sqlClasspath/updateDescription.sql")
+    private val updateSummary = loadFromClasspath("$sqlClasspath/updateSummary.sql")
+    private val updateNotes = loadFromClasspath("$sqlClasspath/updateNotes.sql")
+
 
     init{
         createTables()
@@ -62,47 +69,18 @@ class SanskritDB(
         synchronized(concurrencyLock) {
             val conn = conn()
             try {
-                val nodeStatement = conn.prepareStatement(storeNode)
-                nodeStatement.setString(1, node.uuid.value)
-                nodeStatement.setString(2, node.title)
-                nodeStatement.setString(3, node.subtitle)
-                nodeStatement.setString(4, node.manuscript)
-                nodeStatement.setString(5, node.description)
-                nodeStatement.setString(6, node.summary)
-                nodeStatement.setString(7, node.notes)
-                nodeStatement.executeUpdate()
+                val statement = conn.prepareStatement(storeNode)
+                statement.setString(1, node.uuid.value)
+                statement.setString(2, node.title)
+                statement.setString(3, node.subtitle)
+                statement.setString(4, node.manuscript)
+                statement.setString(5, node.description)
+                statement.setString(6, node.summary)
+                statement.setString(7, node.notes)
+                statement.executeUpdate()
 
-                if (exists) {
-                    if(logger.isTraceEnabled) logger.trace("    Node ${node.uuid} exists, deleting child relationships")
-                    val deleteChildrenStatement = conn.prepareStatement(deleteChildren)
-                    deleteChildrenStatement.setString(1, node.uuid.value)
-                    deleteChildrenStatement.executeUpdate()
-
-                    if(logger.isTraceEnabled) logger.trace("    Node ${node.uuid} exists, deleting contributors")
-                    val deleteContributorsStatement = conn.prepareStatement(deleteContributors)
-                    deleteContributorsStatement.setString(1, node.uuid.value)
-                    deleteContributorsStatement.executeUpdate()
-                }
-
-                for ((index, child) in node.children.withIndex()) {
-                    if(logger.isTraceEnabled) logger.trace("    Creating parent/child relationship: ${node.uuid} : $child")
-                    val storeChildStatement = conn.prepareStatement(storeParentChild)
-                    storeChildStatement.setString(1, node.uuid.value)
-                    storeChildStatement.setString(2, child.value)
-                    storeChildStatement.setInt(3, index)
-                    storeChildStatement.executeUpdate()
-                }
-
-                for ((index, contributor) in node.contributors.withIndex()) {
-                    if(logger.isTraceEnabled) logger.trace("    Adding contributor ${contributor.sortByName}")
-                    val storeContributorStatement = conn.prepareStatement(storeContributor)
-                    storeContributorStatement.setString(1, node.uuid.value)
-                    storeContributorStatement.setString(2, contributor.name)
-                    storeContributorStatement.setString(3, contributor.sortByName)
-                    storeContributorStatement.setInt(4, contributor.role.ordinal)
-                    storeContributorStatement.setInt(5, index)
-                    storeContributorStatement.executeUpdate()
-                }
+                replaceChildren(node, exists, conn)
+                replaceContributors(node, exists, conn)
 
                 conn.commit()
             }
@@ -113,6 +91,119 @@ class SanskritDB(
                 release(conn)
             }
 
+        }
+    }
+
+    fun patch(node: Node){
+        if(logger.isTraceEnabled) logger.trace("Patching node: ${node.uuid}")
+        if( !nodeExists(node.uuid) ){
+            storeNode(node)
+            return
+        }
+
+        synchronized(concurrencyLock) {
+            val conn = conn()
+
+            try {
+                if (node.dirty.title) {
+                    if(logger.isTraceEnabled) logger.trace("    Patching title")
+                    val statement = conn.prepareStatement(updateTitle)
+                    statement.setString(1, node.title)
+                    statement.setString(2, node.uuid.value)
+                    statement.executeUpdate()
+                }
+                if (node.dirty.subtitle) {
+                    if(logger.isTraceEnabled) logger.trace("    Patching subtitle")
+                    val statement = conn.prepareStatement(updateSubtitle)
+                    statement.setString(1, node.subtitle)
+                    statement.setString(2, node.uuid.value)
+                    statement.executeUpdate()
+                }
+                if (node.dirty.manuscript) {
+                    if(logger.isTraceEnabled) logger.trace("    Patching manuscript")
+                    val statement = conn.prepareStatement(updateManuscript)
+                    statement.setString(1, node.manuscript)
+                    statement.setString(2, node.uuid.value)
+                    statement.executeUpdate()
+                }
+                if (node.dirty.description) {
+                    if(logger.isTraceEnabled) logger.trace("    Patching description")
+                    val statement = conn.prepareStatement(updateDescription)
+                    statement.setString(1, node.description)
+                    statement.setString(2, node.uuid.value)
+                    statement.executeUpdate()
+                }
+                if (node.dirty.summary) {
+                    if(logger.isTraceEnabled) logger.trace("    Patching summary")
+                    val statement = conn.prepareStatement(updateSummary)
+                    statement.setString(1, node.summary)
+                    statement.setString(2, node.uuid.value)
+                    statement.executeUpdate()
+                }
+                if (node.dirty.notes) {
+                    if(logger.isTraceEnabled) logger.trace("    Patching notes")
+                    val statement = conn.prepareStatement(updateNotes)
+                    statement.setString(1, node.notes)
+                    statement.setString(2, node.uuid.value)
+                    statement.executeUpdate()
+                }
+                if (node.dirty.children) {
+                    if(logger.isTraceEnabled) logger.trace("    Patching children")
+                    replaceChildren(node, false, conn)
+                }
+                if (node.dirty.contributors) {
+                    if(logger.isTraceEnabled) logger.trace("    Patching contributors")
+                    replaceContributors(node, false, conn)
+                }
+
+                conn.commit()
+                node.dirty.clean()
+            } catch (t: Throwable) {
+                if(logger.isTraceEnabled) logger.error("Error patching node:  ${node.title} : ${node.uuid}", t)
+
+                conn.rollback()
+                throw DatabaseException("Error patching node:  ${node.title} : ${node.uuid}", t)
+            } finally {
+                release(conn)
+            }
+        }
+    }
+
+    private fun replaceChildren(node: Node, exists: Boolean, conn: Connection){
+        if (exists) {
+            if(logger.isTraceEnabled) logger.trace("    Node ${node.uuid} exists, deleting child relationships")
+            val deleteChildrenStatement = conn.prepareStatement(deleteChildren)
+            deleteChildrenStatement.setString(1, node.uuid.value)
+            deleteChildrenStatement.executeUpdate()
+        }
+
+        for ((index, child) in node.children.withIndex()) {
+            if(logger.isTraceEnabled) logger.trace("    Creating parent/child relationship: ${node.uuid} : $child")
+            val storeChildStatement = conn.prepareStatement(storeParentChild)
+            storeChildStatement.setString(1, node.uuid.value)
+            storeChildStatement.setString(2, child.value)
+            storeChildStatement.setInt(3, index)
+            storeChildStatement.executeUpdate()
+        }
+    }
+
+    private fun replaceContributors(node: Node, exists: Boolean, conn: Connection){
+        if (exists) {
+            if(logger.isTraceEnabled) logger.trace("    Node ${node.uuid} exists, deleting contributors")
+            val deleteContributorsStatement = conn.prepareStatement(deleteContributors)
+            deleteContributorsStatement.setString(1, node.uuid.value)
+            deleteContributorsStatement.executeUpdate()
+        }
+
+        for ((index, contributor) in node.contributors.withIndex()) {
+            if(logger.isTraceEnabled) logger.trace("    Adding contributor ${contributor.sortByName}")
+            val storeContributorStatement = conn.prepareStatement(storeContributor)
+            storeContributorStatement.setString(1, node.uuid.value)
+            storeContributorStatement.setString(2, contributor.name)
+            storeContributorStatement.setString(3, contributor.sortByName)
+            storeContributorStatement.setInt(4, contributor.role.ordinal)
+            storeContributorStatement.setInt(5, index)
+            storeContributorStatement.executeUpdate()
         }
     }
 

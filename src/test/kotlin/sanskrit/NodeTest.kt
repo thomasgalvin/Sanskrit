@@ -132,6 +132,8 @@ class NodeTest{
         node.addListener(listener)
 
         node.title = UUID().value
+
+        Assert.assertTrue("Node should have been changed", listener.changed)
         Assert.assertTrue("Title should have been changed", listener.title)
         Assert.assertFalse("Subtitle should not have been changed", listener.subtitle)
         Assert.assertFalse("Manuscript should not have been changed", listener.manuscript)
@@ -158,6 +160,8 @@ class NodeTest{
         node.addListener(listener)
 
         node.subtitle = UUID().value
+
+        Assert.assertTrue("Node should have been changed", listener.changed)
         Assert.assertFalse("Title should not have been changed", listener.title)
         Assert.assertTrue("Subtitle should have been changed", listener.subtitle)
         Assert.assertFalse("Manuscript should not have been changed", listener.manuscript)
@@ -184,6 +188,8 @@ class NodeTest{
         node.addListener(listener)
 
         node.manuscript = UUID().value
+
+        Assert.assertTrue("Node should have been changed", listener.changed)
         Assert.assertFalse("Title should not have been changed", listener.title)
         Assert.assertFalse("Subtitle should not have been changed", listener.subtitle)
         Assert.assertTrue("Manuscript should have been changed", listener.manuscript)
@@ -210,6 +216,8 @@ class NodeTest{
         node.addListener(listener)
 
         node.description = UUID().value
+
+        Assert.assertTrue("Node should have been changed", listener.changed)
         Assert.assertFalse("Title should not have been changed", listener.title)
         Assert.assertFalse("Subtitle should not have been changed", listener.subtitle)
         Assert.assertFalse("Manuscript should not have been changed", listener.manuscript)
@@ -236,6 +244,8 @@ class NodeTest{
         node.addListener(listener)
 
         node.summary = UUID().value
+
+        Assert.assertTrue("Node should have been changed", listener.changed)
         Assert.assertFalse("Title should not have been changed", listener.title)
         Assert.assertFalse("Subtitle should not have been changed", listener.subtitle)
         Assert.assertFalse("Manuscript should not have been changed", listener.manuscript)
@@ -262,6 +272,8 @@ class NodeTest{
         node.addListener(listener)
 
         node.notes = UUID().value
+
+        Assert.assertTrue("Node should have been changed", listener.changed)
         Assert.assertFalse("Title should not have been changed", listener.title)
         Assert.assertFalse("Subtitle should not have been changed", listener.subtitle)
         Assert.assertFalse("Manuscript should not have been changed", listener.manuscript)
@@ -289,6 +301,7 @@ class NodeTest{
 
         node.addChild( UUID() )
 
+        Assert.assertTrue("Node should have been changed", listener.changed)
         Assert.assertFalse("Title should not have been changed", listener.title)
         Assert.assertFalse("Subtitle should not have been changed", listener.subtitle)
         Assert.assertFalse("Manuscript should not have been changed", listener.manuscript)
@@ -321,6 +334,7 @@ class NodeTest{
 
         node.addChild( 2, UUID() )
 
+        Assert.assertTrue("Node should have been changed", listener.changed)
         Assert.assertFalse("Title should not have been changed", listener.title)
         Assert.assertFalse("Subtitle should not have been changed", listener.subtitle)
         Assert.assertFalse("Manuscript should not have been changed", listener.manuscript)
@@ -356,6 +370,7 @@ class NodeTest{
 
         node.removeChild(child)
 
+        Assert.assertTrue("Node should have been changed", listener.changed)
         Assert.assertFalse("Title should not have been changed", listener.title)
         Assert.assertFalse("Subtitle should not have been changed", listener.subtitle)
         Assert.assertFalse("Manuscript should not have been changed", listener.manuscript)
@@ -388,6 +403,7 @@ class NodeTest{
 
         node.removeChild(3)
 
+        Assert.assertTrue("Node should have been changed", listener.changed)
         Assert.assertFalse("Title should not have been changed", listener.title)
         Assert.assertFalse("Subtitle should not have been changed", listener.subtitle)
         Assert.assertFalse("Manuscript should not have been changed", listener.manuscript)
@@ -415,6 +431,7 @@ class NodeTest{
 
         node.addContributor( createContributor() )
 
+        Assert.assertTrue("Node should have been changed", listener.changed)
         Assert.assertFalse("Title should not have been changed", listener.title)
         Assert.assertFalse("Subtitle should not have been changed", listener.subtitle)
         Assert.assertFalse("Manuscript should not have been changed", listener.manuscript)
@@ -445,6 +462,7 @@ class NodeTest{
 
         node.removeContributor(contributor)
 
+        Assert.assertTrue("Node should have been changed", listener.changed)
         Assert.assertFalse("Title should not have been changed", listener.title)
         Assert.assertFalse("Subtitle should not have been changed", listener.subtitle)
         Assert.assertFalse("Manuscript should not have been changed", listener.manuscript)
@@ -474,6 +492,7 @@ class NodeTest{
     }
 
     private class DummyNodeListener: NodeListener{
+        var changed: Boolean = false
         var title: Boolean = false
         var subtitle: Boolean = false
         var manuscript: Boolean = false
@@ -483,6 +502,7 @@ class NodeTest{
         var children: Boolean = false
         var contributors: Boolean = false
 
+        override fun nodeChanged(node: Node) { changed = true }
         override fun titleChanged(node: Node) { title = true }
         override fun subtitleChanged(node: Node) { subtitle = true }
         override fun manuscriptChanged(node: Node) { manuscript = true }
