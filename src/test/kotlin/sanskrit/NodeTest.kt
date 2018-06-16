@@ -140,6 +140,15 @@ class NodeTest{
         Assert.assertFalse("Notes should not have been changed", listener.notes)
         Assert.assertFalse("Children should not have been changed", listener.children)
         Assert.assertFalse("Contributors should not have been changed", listener.contributors)
+
+        Assert.assertTrue("Node.title should have been dirty", node.dirty.title)
+        Assert.assertFalse("Node.subtitle should not have been dirty", node.dirty.subtitle)
+        Assert.assertFalse("Node.manuscript should not have been dirty", node.dirty.manuscript)
+        Assert.assertFalse("Node.description should not have been dirty", node.dirty.description)
+        Assert.assertFalse("Node.summary should not have been dirty", node.dirty.summary)
+        Assert.assertFalse("Node.notes should not have been dirty", node.dirty.notes)
+        Assert.assertFalse("Node.children should not have been dirty", node.dirty.children)
+        Assert.assertFalse("Node.contributors should not have been dirty", node.dirty.contributors)
     }
 
     @Test fun testNodeListenerSubtitle(){
@@ -157,6 +166,15 @@ class NodeTest{
         Assert.assertFalse("Notes should not have been changed", listener.notes)
         Assert.assertFalse("Children should not have been changed", listener.children)
         Assert.assertFalse("Contributors should not have been changed", listener.contributors)
+
+        Assert.assertFalse("Node.title should not have been dirty", node.dirty.title)
+        Assert.assertTrue("Node.subtitle should have been dirty", node.dirty.subtitle)
+        Assert.assertFalse("Node.manuscript should not have been dirty", node.dirty.manuscript)
+        Assert.assertFalse("Node.description should not have been dirty", node.dirty.description)
+        Assert.assertFalse("Node.summary should not have been dirty", node.dirty.summary)
+        Assert.assertFalse("Node.notes should not have been dirty", node.dirty.notes)
+        Assert.assertFalse("Node.children should not have been dirty", node.dirty.children)
+        Assert.assertFalse("Node.contributors should not have been dirty", node.dirty.contributors)
     }
 
     @Test fun testNodeListenerManuscript(){
@@ -174,6 +192,15 @@ class NodeTest{
         Assert.assertFalse("Notes should not have been changed", listener.notes)
         Assert.assertFalse("Children should not have been changed", listener.children)
         Assert.assertFalse("Contributors should not have been changed", listener.contributors)
+
+        Assert.assertFalse("Node.title should not have been dirty", node.dirty.title)
+        Assert.assertFalse("Node.subtitle should not have been dirty", node.dirty.subtitle)
+        Assert.assertTrue("Node.manuscript should have been dirty", node.dirty.manuscript)
+        Assert.assertFalse("Node.description should not have been dirty", node.dirty.description)
+        Assert.assertFalse("Node.summary should not have been dirty", node.dirty.summary)
+        Assert.assertFalse("Node.notes should not have been dirty", node.dirty.notes)
+        Assert.assertFalse("Node.children should not have been dirty", node.dirty.children)
+        Assert.assertFalse("Node.contributors should not have been dirty", node.dirty.contributors)
     }
 
     @Test fun testNodeListenerDescription(){
@@ -191,6 +218,15 @@ class NodeTest{
         Assert.assertFalse("Notes should not have been changed", listener.notes)
         Assert.assertFalse("Children should not have been changed", listener.children)
         Assert.assertFalse("Contributors should not have been changed", listener.contributors)
+
+        Assert.assertFalse("Node.title should not have been dirty", node.dirty.title)
+        Assert.assertFalse("Node.subtitle should not have been dirty", node.dirty.subtitle)
+        Assert.assertFalse("Node.manuscript should not have been dirty", node.dirty.manuscript)
+        Assert.assertTrue("Node.description should have been dirty", node.dirty.description)
+        Assert.assertFalse("Node.summary should not have been dirty", node.dirty.summary)
+        Assert.assertFalse("Node.notes should not have been dirty", node.dirty.notes)
+        Assert.assertFalse("Node.children should not have been dirty", node.dirty.children)
+        Assert.assertFalse("Node.contributors should not have been dirty", node.dirty.contributors)
     }
 
     @Test fun testNodeListenerSummary(){
@@ -208,6 +244,15 @@ class NodeTest{
         Assert.assertFalse("Notes should not have been changed", listener.notes)
         Assert.assertFalse("Children should not have been changed", listener.children)
         Assert.assertFalse("Contributors should not have been changed", listener.contributors)
+
+        Assert.assertFalse("Node.title should not have been dirty", node.dirty.title)
+        Assert.assertFalse("Node.subtitle should not have been dirty", node.dirty.subtitle)
+        Assert.assertFalse("Node.manuscript should not have been dirty", node.dirty.manuscript)
+        Assert.assertFalse("Node.description should not have been dirty", node.dirty.description)
+        Assert.assertTrue("Node.summary should have been dirty", node.dirty.summary)
+        Assert.assertFalse("Node.notes should not have been dirty", node.dirty.notes)
+        Assert.assertFalse("Node.children should not have been dirty", node.dirty.children)
+        Assert.assertFalse("Node.contributors should not have been dirty", node.dirty.contributors)
     }
 
     @Test fun testNodeListenerNotes(){
@@ -225,6 +270,15 @@ class NodeTest{
         Assert.assertTrue("Notes should have been changed", listener.notes)
         Assert.assertFalse("Children should not have been changed", listener.children)
         Assert.assertFalse("Contributors should not have been changed", listener.contributors)
+
+        Assert.assertFalse("Node.title should not have been dirty", node.dirty.title)
+        Assert.assertFalse("Node.subtitle should not have been dirty", node.dirty.subtitle)
+        Assert.assertFalse("Node.manuscript should not have been dirty", node.dirty.manuscript)
+        Assert.assertFalse("Node.description should not have been dirty", node.dirty.description)
+        Assert.assertFalse("Node.summary should not have been dirty", node.dirty.summary)
+        Assert.assertTrue("Node.notes should have been dirty", node.dirty.notes)
+        Assert.assertFalse("Node.children should not have been dirty", node.dirty.children)
+        Assert.assertFalse("Node.contributors should not have been dirty", node.dirty.contributors)
     }
 
     @Test fun testNodeListenerChildrenAdd(){
@@ -243,6 +297,15 @@ class NodeTest{
         Assert.assertFalse("Notes should not have been changed", listener.notes)
         Assert.assertTrue("Children should have been changed", listener.children)
         Assert.assertFalse("Contributors should not have been changed", listener.contributors)
+
+        Assert.assertFalse("Node.title should not have been dirty", node.dirty.title)
+        Assert.assertFalse("Node.subtitle should not have been dirty", node.dirty.subtitle)
+        Assert.assertFalse("Node.manuscript should not have been dirty", node.dirty.manuscript)
+        Assert.assertFalse("Node.description should not have been dirty", node.dirty.description)
+        Assert.assertFalse("Node.summary should not have been dirty", node.dirty.summary)
+        Assert.assertFalse("Node.notes should not have been dirty", node.dirty.notes)
+        Assert.assertTrue("Node.children should have been dirty", node.dirty.children)
+        Assert.assertFalse("Node.contributors should not have been dirty", node.dirty.contributors)
     }
 
     @Test fun testNodeListenerChildrenAddAt(){
@@ -266,6 +329,15 @@ class NodeTest{
         Assert.assertFalse("Notes should not have been changed", listener.notes)
         Assert.assertTrue("Children should have been changed", listener.children)
         Assert.assertFalse("Contributors should not have been changed", listener.contributors)
+
+        Assert.assertFalse("Node.title should not have been dirty", node.dirty.title)
+        Assert.assertFalse("Node.subtitle should not have been dirty", node.dirty.subtitle)
+        Assert.assertFalse("Node.manuscript should not have been dirty", node.dirty.manuscript)
+        Assert.assertFalse("Node.description should not have been dirty", node.dirty.description)
+        Assert.assertFalse("Node.summary should not have been dirty", node.dirty.summary)
+        Assert.assertFalse("Node.notes should not have been dirty", node.dirty.notes)
+        Assert.assertTrue("Node.children should have been dirty", node.dirty.children)
+        Assert.assertFalse("Node.contributors should not have been dirty", node.dirty.contributors)
     }
 
     @Test fun testNodeListenerChildrenRemove(){
@@ -292,6 +364,15 @@ class NodeTest{
         Assert.assertFalse("Notes should not have been changed", listener.notes)
         Assert.assertTrue("Children should have been changed", listener.children)
         Assert.assertFalse("Contributors should not have been changed", listener.contributors)
+
+        Assert.assertFalse("Node.title should not have been dirty", node.dirty.title)
+        Assert.assertFalse("Node.subtitle should not have been dirty", node.dirty.subtitle)
+        Assert.assertFalse("Node.manuscript should not have been dirty", node.dirty.manuscript)
+        Assert.assertFalse("Node.description should not have been dirty", node.dirty.description)
+        Assert.assertFalse("Node.summary should not have been dirty", node.dirty.summary)
+        Assert.assertFalse("Node.notes should not have been dirty", node.dirty.notes)
+        Assert.assertTrue("Node.children should have been dirty", node.dirty.children)
+        Assert.assertFalse("Node.contributors should not have been dirty", node.dirty.contributors)
     }
 
     @Test fun testNodeListenerChildrenRemoveAt(){
@@ -315,6 +396,15 @@ class NodeTest{
         Assert.assertFalse("Notes should not have been changed", listener.notes)
         Assert.assertTrue("Children should have been changed", listener.children)
         Assert.assertFalse("Contributors should not have been changed", listener.contributors)
+
+        Assert.assertFalse("Node.title should not have been dirty", node.dirty.title)
+        Assert.assertFalse("Node.subtitle should not have been dirty", node.dirty.subtitle)
+        Assert.assertFalse("Node.manuscript should not have been dirty", node.dirty.manuscript)
+        Assert.assertFalse("Node.description should not have been dirty", node.dirty.description)
+        Assert.assertFalse("Node.summary should not have been dirty", node.dirty.summary)
+        Assert.assertFalse("Node.notes should not have been dirty", node.dirty.notes)
+        Assert.assertTrue("Node.children should have been dirty", node.dirty.children)
+        Assert.assertFalse("Node.contributors should not have been dirty", node.dirty.contributors)
     }
 
     @Test fun testNodeListenerAddContributors(){
@@ -333,6 +423,15 @@ class NodeTest{
         Assert.assertFalse("Notes should not have been changed", listener.notes)
         Assert.assertFalse("Children should not have been changed", listener.children)
         Assert.assertTrue("Contributors should have been changed", listener.contributors)
+
+        Assert.assertFalse("Node.title should not have been dirty", node.dirty.title)
+        Assert.assertFalse("Node.subtitle should not have been dirty", node.dirty.subtitle)
+        Assert.assertFalse("Node.manuscript should not have been dirty", node.dirty.manuscript)
+        Assert.assertFalse("Node.description should not have been dirty", node.dirty.description)
+        Assert.assertFalse("Node.summary should not have been dirty", node.dirty.summary)
+        Assert.assertFalse("Node.notes should not have been dirty", node.dirty.notes)
+        Assert.assertFalse("Node.children should not have been dirty", node.dirty.children)
+        Assert.assertTrue("Node.contributors should have been dirty", node.dirty.contributors)
     }
 
     private fun createNode( uuid: String = UUID().value ): Node = Node( UUID(uuid), UUID().value, UUID().value, UUID().value, UUID().value, UUID().value, UUID().value )

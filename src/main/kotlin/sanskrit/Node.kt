@@ -11,7 +11,7 @@ class Node(
         children: List<UUID> = listOf(),
         contributors: List<Contributor> = listOf()
 ){
-    var modified: Boolean = false
+    val dirty = NodeDirty()
 
     var title: String = title
         set(value){
@@ -120,7 +120,14 @@ class Node(
             childrenChanged: Boolean = false,
             contributorsChanged: Boolean = false
     ){
-        modified = true
+        if(titleChanged) dirty.title = true
+        if(subtitleChanged) dirty.subtitle = true
+        if(manuscriptChanged) dirty.manuscript = true
+        if(descriptionChanged) dirty.description = true
+        if(summaryChanged) dirty.summary = true
+        if(notesChanged) dirty.notes = true
+        if(childrenChanged) dirty.children = true
+        if(contributorsChanged) dirty.contributors = true
 
         val list = listeners.toMutableList()
         list.reverse()
@@ -168,8 +175,28 @@ class Node(
         result = 31 * result + _contributors.hashCode()
         return result
     }
+}
 
+class NodeDirty{
+    var title: Boolean = false
+    var subtitle: Boolean = false
+    var manuscript: Boolean = false
+    var description: Boolean = false
+    var summary: Boolean = false
+    var notes: Boolean = false
+    var children: Boolean = false
+    var contributors: Boolean = false
 
+    fun clean(){
+        title = false
+        subtitle = false
+        manuscript = false
+        description = false
+        summary = false
+        notes = false
+        children = false
+        contributors = false
+    }
 }
 
 interface NodeListener{
