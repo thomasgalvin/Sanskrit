@@ -19,6 +19,9 @@ class SanskritDB(
     private val storeContributor = loadFromClasspath("$sqlClasspath/storeContributor.sql")
     private val deleteChildren = loadFromClasspath("$sqlClasspath/deleteChildren.sql")
     private val deleteContributors = loadFromClasspath("$sqlClasspath/deleteContributors.sql")
+    private val retrieveNode = loadFromClasspath("$sqlClasspath/retrieveNode.sql")
+    private val retrieveChildren = loadFromClasspath("$sqlClasspath/retrieveChildren.sql")
+    private val retrieveContributors = loadFromClasspath("$sqlClasspath/retrieveContributors.sql")
 
 
     init{
@@ -58,7 +61,6 @@ class SanskritDB(
 
         synchronized(concurrencyLock) {
             val conn = conn()
-
             try {
                 val nodeStatement = conn.prepareStatement(storeNode)
                 nodeStatement.setString(1, node.uuid.value)
@@ -112,6 +114,80 @@ class SanskritDB(
             }
 
         }
+    }
+
+    fun retrieveNode( uuid: UUID ): Node{
+        if(logger.isTraceEnabled) logger.trace("Retrieving node: $uuid")
+        if( !nodeExists(uuid) ) throw NodeNotFoundException(uuid)
+
+        synchronized(concurrencyLock) {
+            val conn = conn()
+            try {
+                if(logger.isTraceEnabled) logger.trace("    Executing SQL: $retrieveNode")
+                val retrieveNodeStatement = conn.prepareStatement(retrieveNode)
+                retrieveNodeStatement.setString(1, uuid.value)
+
+                val retrieveNodeResultSet = retrieveNodeStatement.executeQuery()
+                if( retrieveNodeResultSet.next() ){
+                    if(logger.isTraceEnabled) logger.trace("    Got a hit")
+                    val node = Node(
+                            uuid = uuid,
+                            title = retrieveNodeResultSet.getString("title"),
+                            subtitle = retrieveNodeResultSet.getString("subtitle"),
+                            manuscript = retrieveNodeResultSet.getString("manuscript"),
+                            description = retrieveNodeResultSet.getString("description"),
+                            summary = retrieveNodeResultSet.getString("summary"),
+                            notes = retrieveNodeResultSet.getString("notes")
+                    )
+
+                    if(logger.isTraceEnabled) logger.trace("    Executing SQL: $retrieveChildren")
+                    val retrieveChildrenStatement = conn.prepareStatement(retrieveChildren)
+                    retrieveChildrenStatement.setString(1, uuid.value)
+
+                    val retrieveChildrenResultSet = retrieveChildrenStatement.executeQuery()
+                    while( retrieveChildrenResultSet.next() ){
+                        val childUuid = UUID( retrieveChildrenResultSet.getString("childUuid") )
+                        if(logger.isTraceEnabled) logger.trace("        Found child node: $childUuid")
+                        node.addChild( childUuid )
+                    }
+
+                    if(logger.isTraceEnabled) logger.trace("    Executing SQL: $retrieveContributors")
+                    val retrieveContributorsStatement = conn.prepareStatement(retrieveContributors)
+                    retrieveContributorsStatement.setString(1, uuid.value)
+
+                    val retrieveContributorsResultSet = retrieveContributorsStatement.executeQuery()
+                    while( retrieveContributorsResultSet.next() ){
+                        val roleIndex = retrieveContributorsResultSet.getInt("role")
+                        val role = ContributorRole.values()[roleIndex]
+
+                        val contributor = Contributor(
+                                name = retrieveContributorsResultSet.getString("name"),
+                                sortByName = retrieveContributorsResultSet.getString("sortByName"),
+                                role = role
+                        )
+
+                        if(logger.isTraceEnabled) logger.trace("        Found contributor: $contributor")
+                        node.addContributor(contributor)
+                    }
+
+                    if(logger.isTraceEnabled) logger.trace("    Returning node: ${node.title}")
+                    return node
+                } else{
+                    if(logger.isTraceEnabled) logger.trace("    No results found")
+                    throw NodeNotFoundException(uuid)
+                }
+
+            } catch (t: Throwable) {
+                if(logger.isTraceEnabled) logger.error("Error retrieving node: $uuid", t)
+
+                conn.rollback()
+                throw DatabaseException("Error retrieving node: $uuid", t)
+            } finally {
+                release(conn)
+            }
+        }
+
+        throw NodeNotFoundException(uuid)
     }
 
     companion object {

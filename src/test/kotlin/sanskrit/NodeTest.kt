@@ -37,23 +37,23 @@ class NodeTest{
                 UUID("4"),
                 UUID("5")
         )
-        for(child in children) node.add(child)
+        for(child in children) node.addChild(child)
 
         assertChildNodeOrder(children, node)
 
         val a = UUID("A")
         children.add(0, a)
-        node.add(0, a)
+        node.addChild(0, a)
         assertChildNodeOrder(children, node)
 
         val b = UUID("B")
         children.add(3, b)
-        node.add(3, b)
+        node.addChild(3, b)
         assertChildNodeOrder(children, node)
 
         val c = UUID("C")
         children.add(5, c)
-        node.add(5, c)
+        node.addChild(5, c)
         assertChildNodeOrder(children, node)
     }
 
@@ -77,7 +77,7 @@ class NodeTest{
                 createContributor(),
                 createContributor()
         )
-        for( contributor in contributors ) node.add(contributor)
+        for( contributor in contributors ) node.addContributor(contributor)
 
         assertContributorOrder( contributors, node )
     }
@@ -92,24 +92,24 @@ class NodeTest{
                 createContributor(),
                 createContributor()
         )
-        for( contributor in contributors ) node.add(contributor)
+        for( contributor in contributors ) node.addContributor(contributor)
 
         val a = contributors.removeAt(1)
-        node.remove(a)
+        node.removeContributor(a)
 
         val b = contributors.removeAt(3)
-        node.remove(b)
+        node.removeContributor(b)
 
         assertContributorOrder( contributors, node )
     }
 
     @Test fun testClearContributors(){
         val node = createNode("Parent")
-        node.add( createContributor() )
-        node.add( createContributor() )
-        node.add( createContributor() )
-        node.add( createContributor() )
-        node.add( createContributor() )
+        node.addContributor( createContributor() )
+        node.addContributor( createContributor() )
+        node.addContributor( createContributor() )
+        node.addContributor( createContributor() )
+        node.addContributor( createContributor() )
 
         node.clearContributors()
         assertContributorOrder( listOf(), node )
@@ -233,7 +233,7 @@ class NodeTest{
         val listener = DummyNodeListener()
         node.addListener(listener)
 
-        node.add( UUID() )
+        node.addChild( UUID() )
 
         Assert.assertFalse("Title should not have been changed", listener.title)
         Assert.assertFalse("Subtitle should not have been changed", listener.subtitle)
@@ -247,16 +247,16 @@ class NodeTest{
 
     @Test fun testNodeListenerChildrenAddAt(){
         val node = createNode()
-        node.add( UUID() )
-        node.add( UUID() )
-        node.add( UUID() )
-        node.add( UUID() )
-        node.add( UUID() )
+        node.addChild( UUID() )
+        node.addChild( UUID() )
+        node.addChild( UUID() )
+        node.addChild( UUID() )
+        node.addChild( UUID() )
 
         val listener = DummyNodeListener()
         node.addListener(listener)
 
-        node.add( 2, UUID() )
+        node.addChild( 2, UUID() )
 
         Assert.assertFalse("Title should not have been changed", listener.title)
         Assert.assertFalse("Subtitle should not have been changed", listener.subtitle)
@@ -270,19 +270,19 @@ class NodeTest{
 
     @Test fun testNodeListenerChildrenRemove(){
         val node = createNode()
-        node.add( UUID() )
-        node.add( UUID() )
-        node.add( UUID() )
-        node.add( UUID() )
-        node.add( UUID() )
+        node.addChild( UUID() )
+        node.addChild( UUID() )
+        node.addChild( UUID() )
+        node.addChild( UUID() )
+        node.addChild( UUID() )
 
         val child = UUID()
-        node.add( 2, child )
+        node.addChild( 2, child )
 
         val listener = DummyNodeListener()
         node.addListener(listener)
 
-        node.remove(child)
+        node.removeChild(child)
 
         Assert.assertFalse("Title should not have been changed", listener.title)
         Assert.assertFalse("Subtitle should not have been changed", listener.subtitle)
@@ -296,16 +296,16 @@ class NodeTest{
 
     @Test fun testNodeListenerChildrenRemoveAt(){
         val node = createNode()
-        node.add( UUID() )
-        node.add( UUID() )
-        node.add( UUID() )
-        node.add( UUID() )
-        node.add( UUID() )
+        node.addChild( UUID() )
+        node.addChild( UUID() )
+        node.addChild( UUID() )
+        node.addChild( UUID() )
+        node.addChild( UUID() )
 
         val listener = DummyNodeListener()
         node.addListener(listener)
 
-        node.remove(3)
+        node.removeChild(3)
 
         Assert.assertFalse("Title should not have been changed", listener.title)
         Assert.assertFalse("Subtitle should not have been changed", listener.subtitle)
@@ -323,7 +323,7 @@ class NodeTest{
         val listener = DummyNodeListener()
         node.addListener(listener)
 
-        node.add( createContributor() )
+        node.addContributor( createContributor() )
 
         Assert.assertFalse("Title should not have been changed", listener.title)
         Assert.assertFalse("Subtitle should not have been changed", listener.subtitle)

@@ -64,25 +64,25 @@ class Node(
     private val _children: MutableList<UUID> = children.toMutableList()
     val children: List<UUID> get() = _children.toList()
 
-    fun add( child: UUID ){
+    fun addChild(child: UUID ){
         _children.add(child)
         notifyListeners(childrenChanged = true)
     }
 
-    fun add( index: Int, child: UUID ){
+    fun addChild(index: Int, child: UUID ){
         _children.remove(child)
         _children.add(index, child)
         notifyListeners(childrenChanged = true)
     }
 
-    fun remove( child: UUID ){
+    fun removeChild(child: UUID ){
         if( _children.contains(child) ){
             _children.remove(child)
             notifyListeners(childrenChanged = true)
         }
     }
 
-    fun remove( index: Int ){
+    fun removeChild(index: Int ){
         _children.removeAt(index)
         notifyListeners(childrenChanged = true)
     }
@@ -90,12 +90,12 @@ class Node(
     private val _contributors: MutableList<Contributor> = contributors.toMutableList()
     val contributors: List<Contributor> get() = _contributors.toList()
 
-    fun add( contributor: Contributor ){
+    fun addContributor(contributor: Contributor ){
         _contributors.add(contributor)
         notifyListeners(contributorsChanged = true)
     }
 
-    fun remove( contributor: Contributor ){
+    fun removeContributor(contributor: Contributor ){
         _contributors.remove(contributor)
         notifyListeners(contributorsChanged = true)
     }
@@ -136,6 +136,40 @@ class Node(
             if( contributorsChanged ) listener.contributorsChanged(this)
         }
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as Node
+
+        if (uuid != other.uuid) return false
+        if (title != other.title) return false
+        if (subtitle != other.subtitle) return false
+        if (manuscript != other.manuscript) return false
+        if (description != other.description) return false
+        if (summary != other.summary) return false
+        if (notes != other.notes) return false
+        if (_children != other._children) return false
+        if (_contributors != other._contributors) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = uuid.hashCode()
+        result = 31 * result + title.hashCode()
+        result = 31 * result + subtitle.hashCode()
+        result = 31 * result + manuscript.hashCode()
+        result = 31 * result + description.hashCode()
+        result = 31 * result + summary.hashCode()
+        result = 31 * result + notes.hashCode()
+        result = 31 * result + _children.hashCode()
+        result = 31 * result + _contributors.hashCode()
+        return result
+    }
+
+
 }
 
 interface NodeListener{

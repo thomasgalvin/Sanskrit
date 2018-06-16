@@ -101,7 +101,7 @@ class NodeReferenceTest{
     private fun createNode(uuid: String = UUID().value, title: String = uuid, nodeSource: DummyNodeDB, parent: Node? ): Node{
         val node = Node( UUID(uuid), title, UUID().value, UUID().value, UUID().value, UUID().value, UUID().value )
         nodeSource.storeNode(node)
-        if( parent != null ) parent.add(node.uuid)
+        if( parent != null ) parent.addChild(node.uuid)
         return node
     }
 }

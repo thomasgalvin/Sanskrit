@@ -1,5 +1,6 @@
 package sanskrit
 
+import org.junit.Assert
 import org.junit.Test
 import java.io.File
 import java.security.SecureRandom
@@ -26,6 +27,11 @@ class SanskritDBTest{
         )
 
         for( node in nodes ) db.storeNode(node)
+
+        for( expected in nodes ){
+            val loaded = db.retrieveNode(expected.uuid)
+            Assert.assertEquals("Loaded node did not match original", expected, loaded)
+        }
     }
 
     private fun createNode(): Node{
@@ -39,7 +45,8 @@ class SanskritDBTest{
                 notes = UUID().value
         )
 
-        for(i in 1..5) node.add( createContributor() )
+        for(i in 1..5) node.addChild( UUID() )
+        for(i in 1..5) node.addContributor( createContributor() )
 
         return node
     }
